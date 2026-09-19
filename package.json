@@ -1,0 +1,5 @@
+{
+  "name": "emoji-mind-reader",
+  "private": true,
+  "scripts": {"check": "node --check app.js"}
+}

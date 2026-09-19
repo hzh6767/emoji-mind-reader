@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Emoji 读心游戏</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="shell">
+    <header><div class="eyebrow">EMOJI MIND READER · 03</div><h1>Emoji 读心游戏</h1><p>先在心里选一个表情，再给 AI 一点文字线索。看看它能不能猜中你的当下。</p></header>
+    <section class="game panel">
+      <div class="step"><span class="step-no">01</span><div><h2>选一个秘密表情</h2><p>点击一个，不要告诉 AI。</p></div></div>
+      <div id="emojiGrid" class="emoji-grid" role="group" aria-label="秘密表情选择"></div>
+      <div class="step"><span class="step-no">02</span><div><h2>写一句线索</h2><p>今天发生了什么？可选，但越具体越有趣。</p></div></div>
+      <textarea id="clue" rows="3" maxlength="160" placeholder="例如：刚刚终于赶上了末班车……"></textarea>
+      <button id="read" class="primary" type="button" disabled><span aria-hidden="true">◉</span> 开始读心</button>
+    </section>
+    <section class="result panel" aria-live="polite">
+      <div class="result-label">AI 的猜测</div><div id="guess" class="guess">？</div><p id="message">先选择一个秘密表情，读心雷达才会启动。</p>
+      <div class="score-row"><span>本局命中</span><strong id="score">0 / 0</strong><button id="reset" class="quiet" type="button">重新开始</button></div>
+    </section>
+    <section class="tips"><span>小提示</span> 文字里出现“终于、哈哈、累、烦、惊喜”等词，AI 会更有把握。</section>
+  </main>
+  <script src="app.js"></script>
+</body>
+</html>
