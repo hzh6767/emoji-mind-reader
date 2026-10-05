@@ -1,5 +1,11 @@
 {
   "name": "emoji-mind-reader",
+  "version": "1.0.0",
+  "description": "A static offline game where AI guesses your emoji based on text clues",
   "private": true,
-  "scripts": {"check": "node --check app.js"}
+  "license": "MIT",
+  "scripts": {
+    "check": "node --check app.js",
+    "test": "node tests/app.test.js"
+  }
 }
