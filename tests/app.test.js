@@ -1,5 +1,7 @@
 const { analyze, emojis } = require('../app.js');
 const assert = require('assert');
+const fs = require('fs');
+const path = require('path');
 
 function test(name, fn) {
   try {
@@ -35,17 +37,17 @@ test('analyze matches 烦躁 emoji for annoyed keywords', () => {
   assert(emoji.name === '烦躁', `Expected 烦躁, got ${emoji.name}`);
 });
 
-test('analyze returns random index for empty clue', () => {
+test('analyze returns a deterministic fallback index for an empty clue', () => {
   const result = analyze('');
   assert(result >= 0 && result < emojis.length, 'Index out of range');
 });
 
-test('analyze returns random index for short clue', () => {
+test('analyze returns a deterministic fallback index for a short clue', () => {
   const result = analyze('x');
   assert(result >= 0 && result < emojis.length, 'Index out of range');
 });
 
-test('analyze returns random index for no matching keywords', () => {
+test('analyze returns a deterministic fallback index for no matching keywords', () => {
   const result = analyze('这是一段没有情绪词的普通文字');
   assert(result >= 0 && result < emojis.length, 'Index out of range');
 });
@@ -78,4 +80,22 @@ test('each emoji has required fields', () => {
   });
 });
 
+test('analyze is deterministic (no random fallback)', () => {
+  assert.strictEqual(analyze(''), 0, 'empty clue should fall back to index 0');
+  for (let i = 0; i < 50; i++) {
+    assert.strictEqual(analyze(''), 0, 'empty clue result drifted between calls');
+    assert.strictEqual(analyze('这是一段没有情绪词的普通文字'), 0, 'no-match clue result drifted between calls');
+  }
+});
+
+test('overlapping keywords do not double-count (气 within 生气)', () => {
+  // 开心(哈哈=2) must tie-beat 烦躁, whose 生气(2)+气(1) overlap on one character.
+  const result = analyze('哈哈生气');
+  assert(emojis[result].name === '开心', `Expected 开心, got ${emojis[result].name}`);
+});
+
+test('README documents the test command', () => {
+  const readme = fs.readFileSync(path.join(__dirname, '..', 'README.md'), 'utf8');
+  assert(readme.includes('npm test'), 'README does not mention `npm test`');
+});
 console.log('\nAll tests passed!');

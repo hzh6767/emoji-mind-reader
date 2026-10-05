@@ -16,8 +16,20 @@ const emojis = [
 ];
 
 function analyze(clue) {
-  const scores = emojis.map((emoji) => emoji.words.reduce((score, word) => score + (clue.includes(word) ? word.length : 0), 0));
-  if (Math.max(...scores) === 0) return Math.floor(Math.random() * emojis.length);
+  // Score = number of distinct clue characters covered by this emoji's keywords.
+  // Counting distinct positions (rather than summing word lengths) stops an
+  // overlapping pair such as "生气"/"气" from scoring more than the clue itself.
+  const scores = emojis.map((emoji) => {
+    const matched = new Set();
+    emoji.words.forEach((word) => {
+      let from = clue.indexOf(word);
+      while (from !== -1) {
+        for (let i = from; i < from + word.length; i += 1) matched.add(i);
+        from = clue.indexOf(word, from + 1);
+      }
+    });
+    return matched.size;
+  });
   return scores.indexOf(Math.max(...scores));
 }
 
