@@ -102,5 +102,6 @@ if (typeof document !== 'undefined') {
     $('#message').textContent = '先选择一个秘密表情，读心雷达才会启动。';
     clue.value = '';
     updateScore();
+    grid.firstElementChild.focus();
   });
 }
