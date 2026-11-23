@@ -43,6 +43,16 @@ let wins = 0;
 
 if (typeof document !== 'undefined') {
   const grid = $('#emojiGrid');
+  const readButton = $('#read');
+  const clue = $('#clue');
+  function prepareRound() {
+    $('#guess').textContent = '？';
+    $('#message').textContent = '秘密已锁定，可以开始读心了。';
+    readButton.disabled = false;
+  }
+  clue.addEventListener('input', () => {
+    if (selected !== null && readButton.disabled) prepareRound();
+  });
 
   emojis.forEach((emoji, index) => {
     const button = document.createElement('button');
@@ -53,23 +63,24 @@ if (typeof document !== 'undefined') {
     button.setAttribute('aria-label', emoji.name);
     button.setAttribute('aria-pressed', 'false');
     button.addEventListener('click', () => {
+      if (selected === index) return;
       selected = index;
       document.querySelectorAll('.emoji-choice').forEach((item, i) => {
         const on = i === index;
         item.classList.toggle('selected', on);
         item.setAttribute('aria-pressed', String(on));
       });
-      $('#read').disabled = false;
-      $('#message').textContent = '秘密已锁定。现在给一点文字线索吧。';
+      prepareRound();
     });
     grid.append(button);
   });
 
   function updateScore() { $('#score').textContent = `${wins} / ${rounds}`; }
 
-  $('#read').addEventListener('click', () => {
-    if (selected === null) return;
-    const guessIndex = analyze($('#clue').value);
+  readButton.addEventListener('click', () => {
+    if (readButton.disabled) return;
+    const guessIndex = analyze(clue.value);
+    readButton.disabled = true;
     const hit = guessIndex === selected;
     rounds += 1;
     if (hit) wins += 1;
@@ -86,10 +97,10 @@ if (typeof document !== 'undefined') {
       item.classList.remove('selected');
       item.setAttribute('aria-pressed', 'false');
     });
-    $('#read').disabled = true;
+    readButton.disabled = true;
     $('#guess').textContent = '？';
     $('#message').textContent = '先选择一个秘密表情，读心雷达才会启动。';
-    $('#clue').value = '';
+    clue.value = '';
     updateScore();
   });
 }
